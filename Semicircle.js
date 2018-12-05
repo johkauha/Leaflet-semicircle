@@ -37,7 +37,7 @@
         return rotated(this, angle, r);
     };
 
-    var semicircle = {
+    L.Circle = L.Circle.extend({
         options: {
             startAngle: 0,
             stopAngle: 359.9999
@@ -114,17 +114,7 @@
                 p.distanceTo(this._point) <= this._radius + this._clickTolerance()
             );
         }
-    };
-
-    L.SemiCircle = L.Circle.extend(semicircle);
-    L.SemiCircleMarker = L.CircleMarker.extend(semicircle);
-
-    L.semiCircle = function (latlng, options) {
-        return new L.SemiCircle(latlng, options);
-    };
-    L.semiCircleMarker = function (latlng, options) {
-        return new L.SemiCircleMarker(latlng, options);
-    };
+    });
 
     var _updateCircleSVG = L.SVG.prototype._updateCircle;
     var _updateCircleCanvas = L.Canvas.prototype._updateCircle;
@@ -132,8 +122,7 @@
     L.SVG.include({
         _updateCircle: function (layer) {
             // If we want a circle, we use the original function
-            if (!(layer instanceof L.SemiCircle || layer instanceof L.SemiCircleMarker) ||
-                !layer.isSemicircle()) {
+            if (!layer.isSemicircle()) {
                 return _updateCircleSVG.call(this, layer);
             }
             if (layer._empty()) {
@@ -149,10 +138,7 @@
             var largeArc = (layer.options.stopAngle - layer.options.startAngle >= 180) ? '1' : '0';
 
             var d = 'M' + p.x + ',' + p.y +
-                // line to first start point
-                'L' + start.x + ',' + start.y +
-                'A ' + r + ',' + r2 + ',0,' + largeArc + ',1,' + end.x + ',' + end.y +
-                ' z';
+                'A ' + r + ',' + r2 + ',0,' + largeArc + ',1,' + end.x + ',' + end.y;
 
             this._setPath(layer, d);
         }
@@ -193,5 +179,13 @@
 
             this._fillStroke(ctx, layer);
         }
+    });
+
+    // L.CircleMarker inherits from L.Circle before the Semicircle stuff is
+    // added. The renderers test if the layer is a semicircle with a function
+    // isSemicircle, so add that to L.CircleMarker to make sure we can still
+    // make L.CircleMarkers.
+    L.CircleMarker = L.CircleMarker.extend({
+        isSemicircle: function () { return false; }
     });
 });
