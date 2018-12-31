@@ -121,12 +121,13 @@
 
     L.SVG.include({
         _updateCircle: function (layer) {
+            if (layer._empty()) {
+                return this._setPath(layer, 'M0 0');
+            }
+
             // If we want a circle, we use the original function
             if (!layer.isSemicircle()) {
                 return _updateCircleSVG.call(this, layer);
-            }
-            if (layer._empty()) {
-                return this._setPath(layer, 'M0 0');
             }
 
             var p = layer._map.latLngToLayerPoint(layer._latlng),
