@@ -138,7 +138,7 @@
 
             var largeArc = (layer.options.stopAngle - layer.options.startAngle >= 180) ? '1' : '0';
 
-            var d = 'M' + p.x + ',' + p.y +
+            var d = 'M' + start.x + ',' + start.y +
                 'A ' + r + ',' + r2 + ',0,' + largeArc + ',1,' + end.x + ',' + end.y;
 
             this._setPath(layer, d);
@@ -169,8 +169,7 @@
             }
 
             ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(start.x, start.y);
+            ctx.moveTo(start.x, start.y);
             ctx.arc(p.x, p.y, r, layer.startAngle(), layer.stopAngle());
             ctx.lineTo(p.x, p.y);
 
