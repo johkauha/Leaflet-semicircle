@@ -136,10 +136,18 @@
                 start = p.rotated(layer.startAngle(), r),
                 end = p.rotated(layer.stopAngle(), r);
 
-            var largeArc = (layer.options.stopAngle - layer.options.startAngle >= 180) ? '1' : '0';
+            var largeArc;
+            var sweep;
+            if (layer.options.stopAngle > layer.options.startAngle) {
+                largeArc = layer.options.stopAngle - layer.options.startAngle > 180 ? '1' : '0';
+                sweep = '1';
+            } else {
+                largeArc = 360 - layer.options.startAngle + layer.options.stopAngle > 180 ? '1' : '0';
+                sweep = '0';
+            }
 
             var d = 'M' + start.x + ',' + start.y +
-                'A ' + r + ',' + r2 + ',0,' + largeArc + ',1,' + end.x + ',' + end.y;
+                'A ' + r + ',' + r2 + ',0,' + largeArc + ',' + sweep + ',' + end.x + ',' + end.y;
 
             this._setPath(layer, d);
         }
