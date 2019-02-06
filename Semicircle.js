@@ -179,7 +179,6 @@
             ctx.beginPath();
             ctx.moveTo(start.x, start.y);
             ctx.arc(p.x, p.y, r, layer.startAngle(), layer.stopAngle());
-            ctx.lineTo(p.x, p.y);
 
             if (s !== 1) {
                 ctx.restore();
